@@ -8,6 +8,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.Color;
+import java.io.Serializable;
 
 @Plugin(name = "SwingAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
 public class SwingAppender extends AbstractAppender {
@@ -69,12 +70,11 @@ public class SwingAppender extends AbstractAppender {
         if (textPane == null || document == null) {
             return;
         }
-        
+        final String message = new String(getLayout().toByteArray(event));
+        final String styleName = getStyleForLevel(event.getLevel().name());
+
         SwingUtilities.invokeLater(() -> {
             try {
-                String message = new String(getLayout().toByteArray(event));
-                String styleName = getStyleForLevel(event.getLevel().name());
-                
                 // Limit document size to prevent memory issues
                 if (document.getLength() > 50000) {
                     document.remove(0, 10000);

@@ -1,7 +1,12 @@
 package com.mrstride.gui;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.mrstride.ApplicationContextProvider;
+import com.mrstride.console.SortingWork;
+import com.mrstride.services.LoggingService;
+import com.mrstride.services.SwingAppender;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,62 +18,44 @@ public class MainFrame extends JFrame {
 
     public static MainFrame theFrame = null;
 
-    // Our application may have many animated panels
-    // But only one panel will be currently visible at a time
-    private JPanel[] panels;
-    private int currentPanel = -1;
+    public static Logger consoleLogger = ApplicationContextProvider
+        .getApplicationContext()
+        .getBean(LoggingService.class)
+        .getLogger("console");
+
+    private JTextPane loggingPane;
 
     /**
      * Create the main JFrame and all animation JPanels.
      */
     public void createFrame() {
+        // Use the default LayoutManager (BorderLayout)
+        // No need to call this.setLayout(...);
+        this.setSize(WIDTH, HEIGHT);
+        this.setTitle("490 Console Work");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         addMenuBar();
-        panels = new JPanel[2];
 
-        panels[GAME_PANEL] = new GamePanel();
-        panels[ANIIMATIONS_PANEL] = new AnimationsDialog();
+        loggingPane = new JTextPane();
+        loggingPane.setEditable(false);
+        loggingPane.setBackground(Color.WHITE);
+        
+        JScrollPane scrollPane = new JScrollPane(loggingPane);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        // Review: why these dimensions?
+        scrollPane.setPreferredSize(new Dimension(780, 600));
+        scrollPane.setVisible(true);
+        this.add(scrollPane);
 
-        for (JPanel panel : panels) {
-            panel.setBounds(0, 0, MainFrame.WIDTH, MainFrame.HEIGHT);
-            this.add(panel);
-            panel.setVisible(false);
-        }
-        // TODO: set size, title, and close operation
-
-        this.currentPanel = -1;
-        showPanel(GAME_PANEL);
+        // JFrame must be set to visible 
+        this.setVisible(true);
 
         System.out.println("All done creating our frame");
 
-        // TODO: JFrame must be set to visible 
-    }
-
-    public static void showPanel(int index) {
-        MainFrame.theFrame.showPanelInternal(index);
-    }
-
-    private void showPanelInternal(int index) {
-        System.out.printf("Show Panel. Thread is: %s\n", Thread.currentThread().getName());
-
-        // hide the current panel
-        if (currentPanel != -1) {
-            panels[currentPanel].setVisible(false);
-            if (panels[currentPanel] instanceof AnimationPanel) {
-                AnimationPanel ap = (AnimationPanel) panels[currentPanel];
-                ap.stop();
-            }
-        }
-
-        // show the correct panel
-        currentPanel = index;
-        panels[currentPanel].setVisible(true);
-        panels[currentPanel].setFocusable(true);
-        panels[currentPanel].setRequestFocusEnabled(true);
-        panels[currentPanel].requestFocus();
-        if (panels[currentPanel] instanceof AnimationPanel) {
-            AnimationPanel ap = (AnimationPanel) panels[currentPanel];
-            ap.start();
-        }
+        // setup the logging to the ScrollPane
+        SwingAppender.setTextPane(loggingPane);
+        consoleLogger.info("Application started - logging to ScrollPane enabled");
     }
 
     /**
@@ -95,7 +82,8 @@ public class MainFrame extends JFrame {
         JMenu menu = new JMenu("Options");
         menu.setMnemonic('O');
 
-        // TODO: Create menu items
+        JMenuItem item = new JMenuItem("Placeholder");
+        menu.add(item);
         
         return menu;
     }
@@ -108,7 +96,11 @@ public class MainFrame extends JFrame {
         JMenu menu = new JMenu("Console");
         menu.setMnemonic('C');
 
-        // TODO: create menu items
+        // create menu items
+        JMenuItem item = new JMenuItem("Sorting");
+        item.addActionListener(ae -> SortingWork.start());
+        menu.add(item);
+        
         return menu;
     }
 }
