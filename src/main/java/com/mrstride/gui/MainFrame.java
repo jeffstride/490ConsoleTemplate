@@ -56,10 +56,10 @@ public class MainFrame extends JFrame {
         // setup the logging to the ScrollPane
         SwingAppender.setTextPane(loggingPane);
         consoleLogger.info("Application started - logging to ScrollPane enabled");
-        consoleLogger.info("Info Color");
-        consoleLogger.error("Error Color");
-        consoleLogger.warn("Warning level");
-        consoleLogger.debug("Debug Color");
+        consoleLogger.info("Info Style");
+        consoleLogger.error("Error Style");
+        consoleLogger.warn("Warning Style");
+        consoleLogger.debug("Debug Style");
     }
 
     /**

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
   <Appenders>
-    <File name="PerformanceFile" fileName="logs/perf.log">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t]:  %msg%n"></PatternLayout>
-    </File>
     <!-- Custom GUI appender -->
     <SwingAppender name="SwingAppender">
         <PatternLayout pattern="%d{mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
@@ -11,14 +8,14 @@
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
     </Console>
+    <File name="ThreadFile" fileName="logs/threading.log">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t]:  %msg%n"></PatternLayout>
+    </File>
   </Appenders>
   <Loggers>
-    <Logger name="PerformanceFile" level="info" additivity="false">
-      <AppenderRef ref="PerformanceFile" />
-    </Logger>
     <Logger name="swing" level="all" additivity="false">
-      <AppenderRef ref="Console" />
       <AppenderRef ref="SwingAppender"/>
+      <AppenderRef ref="ThreadFile" />
     </Logger>
     <Root level="info">
       <AppenderRef ref="Console" />

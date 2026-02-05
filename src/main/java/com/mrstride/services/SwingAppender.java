@@ -5,6 +5,8 @@ import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.Level;
+
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.Color;
@@ -15,6 +17,8 @@ public class SwingAppender extends AbstractAppender {
     
     private static JTextPane textPane;
     private static StyledDocument document;
+
+    public static boolean useThreadColors = true;
     
     protected SwingAppender(String name, Filter filter, Layout<? extends Serializable> layout) {
         super(name, filter, layout, true, null);
@@ -63,6 +67,55 @@ public class SwingAppender extends AbstractAppender {
         
         Style debugStyle = textPane.addStyle("debug", defaultStyle);
         StyleConstants.setForeground(debugStyle, Color.GRAY);
+
+        setupThreadStyles(10);
+    }
+
+    private static void setupThreadStyles(int n) {
+        
+        for (int iThread = 0; iThread < n; iThread++) {
+            String threadName = "Thread-" + iThread;
+
+            Style threadStyle = textPane.addStyle("info:" + threadName, null);
+            StyleConstants.setForeground(threadStyle, PALETTE[iThread]);               
+
+            Style warnStyle = textPane.addStyle("warn:" + threadName, threadStyle);
+            StyleConstants.setBold(warnStyle, true);
+
+            Style errorStyle = textPane.addStyle("error:" + threadName, warnStyle);
+            StyleConstants.setUnderline(errorStyle, true);
+            
+            Style debugStyle = textPane.addStyle("debug:" + threadName, threadStyle);
+            StyleConstants.setItalic(debugStyle, true);
+        }
+    }
+
+    private static int getThreadNum(String s) {
+        // input is of type "Thread-19"
+        // Find the last digits to return 9
+
+        // move past non-digits
+        int i = 0;
+        while (i < s.length() && !Character.isDigit(s.charAt(i))) {
+            i++;
+        }
+        // not good, assume thread 0
+        if (i == s.length()) return 0;
+
+        // get the last digit
+        int n = 0;
+        while (i < s.length() && Character.isDigit(s.charAt(i))) {
+            n = Character.getNumericValue(s.charAt(i));
+            i++;
+        }
+        return n;
+    }
+
+    private static String getThreadStyleName(String s, Level level) {
+        int n = getThreadNum(s);
+        String result = level.name().toLowerCase() + ":Thread-" + n;
+
+        return result;
     }
     
     @Override
@@ -70,8 +123,10 @@ public class SwingAppender extends AbstractAppender {
         if (textPane == null || document == null) {
             return;
         }
+        
         final String message = new String(getLayout().toByteArray(event));
-        final String styleName = getStyleForLevel(event.getLevel().name());
+        final String styleName = !useThreadColors ? getStyleForLevel(event.getLevel().name()) :
+            getThreadStyleName(event.getThreadName(), event.getLevel());
 
         SwingUtilities.invokeLater(() -> {
             try {
@@ -80,8 +135,7 @@ public class SwingAppender extends AbstractAppender {
                     document.remove(0, 10000);
                 }
                 
-                document.insertString(document.getLength(), message, 
-                                    textPane.getStyle(styleName));
+                document.insertString(document.getLength(), message, textPane.getStyle(styleName));
                 
                 // Auto-scroll to bottom
                 textPane.setCaretPosition(document.getLength());
@@ -92,7 +146,20 @@ public class SwingAppender extends AbstractAppender {
             }
         });
     }
-    
+
+    private static final Color[] PALETTE = new Color[] {
+        new Color(0x000000), // Black
+        new Color(0x0B3D91), // Royal Blue (dark)
+        new Color(0x1B5E20), // Evergreen (dark green)
+        new Color(0x4A148C), // Aubergine (deep purple)
+        new Color(0xB71C1C), // Crimson (dark red)
+        new Color(0x6D4C41), // Brown
+        new Color(0x37474F), // Blue Grey
+        new Color(0x004D40), // Deep Teal
+        new Color(0x3E2723), // Chocolate
+        new Color(0x880E4F)  // Deep Magenta
+    };
+ 
     private String getStyleForLevel(String level) {
         switch (level.toLowerCase()) {
             case "error":
