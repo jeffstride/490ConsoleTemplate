@@ -17,9 +17,11 @@
       <AppenderRef ref="SwingAppender"/>
       <AppenderRef ref="ThreadFile" />
     </Logger>
+    <Logger name="console" level="all" addititvity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
     <Root level="info">
       <AppenderRef ref="Console" />
-      <AppenderRef ref="SwingAppender"/>
     </Root>
   </Loggers>
 </Configuration>

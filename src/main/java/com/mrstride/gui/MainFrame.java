@@ -1,10 +1,9 @@
 package com.mrstride.gui;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-import com.mrstride.ApplicationContextProvider;
 import com.mrstride.console.SortingWork;
-import com.mrstride.services.LoggingService;
 import com.mrstride.services.SwingAppender;
 
 import javax.swing.*;
@@ -18,12 +17,12 @@ public class MainFrame extends JFrame {
 
     public static MainFrame theFrame = null;
 
-    public static Logger consoleLogger = ApplicationContextProvider
-        .getApplicationContext()
-        .getBean(LoggingService.class)
-        .getLogger("swing");
-
     private JTextPane loggingPane;
+
+    public static Logger consolePane = LogManager.getLogger("swing");
+
+    public MainFrame() {
+    }
 
     /**
      * Create the main JFrame and all animation JPanels.
@@ -55,11 +54,11 @@ public class MainFrame extends JFrame {
 
         // setup the logging to the ScrollPane
         SwingAppender.setTextPane(loggingPane);
-        consoleLogger.info("Application started - logging to ScrollPane enabled");
-        consoleLogger.info("Info Style");
-        consoleLogger.error("Error Style");
-        consoleLogger.warn("Warning Style");
-        consoleLogger.debug("Debug Style");
+        consolePane.info("Application started - logging to ScrollPane enabled");
+        consolePane.info("Info Style");
+        consolePane.error("Error Style");
+        consolePane.warn("Warning Style");
+        consolePane.debug("Debug Style");
     }
 
     /**
