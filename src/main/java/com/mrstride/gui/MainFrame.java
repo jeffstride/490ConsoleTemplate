@@ -17,9 +17,13 @@ public class MainFrame extends JFrame {
 
     public static MainFrame theFrame = null;
 
-    private JTextPane loggingPane;
-    private JScrollPane scrollPane;
-    private JPanel progressExample;
+    private static final String CARD_CONSOLE = "console";
+    private static final String CARD_PROGRESS = "progress";
+
+    // Container with CardLayout
+    private JPanel cards;             
+    private JScrollPane consoleCard; 
+    private JPanel progressCard; 
 
     public static Logger consolePane = LogManager.getLogger("swing");
 
@@ -31,31 +35,32 @@ public class MainFrame extends JFrame {
      * Create the main JFrame and all animation JPanels.
      */
     public void createFrame() {
-        // Use the default LayoutManager (BorderLayout)
-        // No need to call this.setLayout(...);
         this.setSize(WIDTH, HEIGHT);
         this.setTitle("490 Console Work");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         addMenuBar();
 
-        loggingPane = new JTextPane();
+        JTextPane loggingPane = new JTextPane();
         loggingPane.setEditable(false);
-        loggingPane.setBackground(Color.WHITE);
-        
-        scrollPane = new JScrollPane(loggingPane);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setVisible(true);
-        this.add(scrollPane);
+        loggingPane.setBackground(Color.WHITE);    
+        consoleCard = new JScrollPane(loggingPane);
+        consoleCard.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        progressCard = new ProgressExample(this::showConsole);
+
+        // Host with CardLayout to make switching between panels easy
+        cards = new JPanel(new CardLayout());
+        cards.add(consoleCard, CARD_CONSOLE);
+        cards.add(progressCard, CARD_PROGRESS);
+
+        // Put cards into the frame (frame stays BorderLayout)
+        this.add(cards, BorderLayout.CENTER);
 
         // JFrame must be set to visible 
         this.setVisible(true);
 
-        progressExample = new ProgressExample();
-
-        System.out.println("All done creating our frame");
-
-        // setup the logging to the ScrollPane
+        // setup the logging to the GUI console
         SwingAppender.setTextPane(loggingPane);
         consolePane.info("Application started - logging to ScrollPane enabled");
         consolePane.info("Info Style");
@@ -65,25 +70,11 @@ public class MainFrame extends JFrame {
     }
 
     public void showProgress() {
-        this.remove(scrollPane);
-        scrollPane.setVisible(false);
-
-        this.add(progressExample);
-        progressExample.setVisible(true);
-
-        revalidate();
-        repaint();
+        ((CardLayout) cards.getLayout()).show(cards, CARD_PROGRESS);
     }
 
     public void showConsole() {
-        this.remove(progressExample);
-        progressExample.setVisible(false);
-
-        this.add(scrollPane);
-        scrollPane.setVisible(true);
-
-        revalidate();
-        repaint();
+        ((CardLayout) cards.getLayout()).show(cards, CARD_CONSOLE);
     }
 
     /**

@@ -11,12 +11,12 @@ import javax.swing.JPanel;
  */
 public class ProgressExample extends JPanel {
 
-    public ProgressExample() {
+    public ProgressExample(Runnable goBack) {
         // we create the components for the JPanel here.
         // This must be done on the EDT Thread. Since MainFrame is created on the EDT,
         // then this will also be constructed on the EDT.
         JButton button = new JButton("Return");
-        button.addActionListener(ae -> MainFrame.theFrame.showConsole());
+        button.addActionListener(ae -> goBack.run());
         this.add(button);
 
         button.setPreferredSize(new Dimension(100, 20));
