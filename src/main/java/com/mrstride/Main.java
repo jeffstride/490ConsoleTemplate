@@ -39,8 +39,8 @@ public class Main implements CommandLineRunner {
     public void run(String... args) throws Exception {
         // Invoke the UI Thread to create the Main frame. 
         SwingUtilities.invokeLater(() -> {
-            MainFrame.theFrame = new MainFrame();
-            MainFrame.theFrame.createFrame();
+            MainFrame frame = new MainFrame();
+            frame.createFrame();
         });
 
         System.out.println("Hello World");

@@ -18,10 +18,13 @@ public class MainFrame extends JFrame {
     public static MainFrame theFrame = null;
 
     private JTextPane loggingPane;
+    private JScrollPane scrollPane;
+    private JPanel progressExample;
 
     public static Logger consolePane = LogManager.getLogger("swing");
 
     public MainFrame() {
+        theFrame = this;
     }
 
     /**
@@ -40,7 +43,7 @@ public class MainFrame extends JFrame {
         loggingPane.setEditable(false);
         loggingPane.setBackground(Color.WHITE);
         
-        JScrollPane scrollPane = new JScrollPane(loggingPane);
+        scrollPane = new JScrollPane(loggingPane);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         // Review: why these dimensions?
         scrollPane.setPreferredSize(new Dimension(780, 600));
@@ -59,6 +62,27 @@ public class MainFrame extends JFrame {
         consolePane.error("Error Style");
         consolePane.warn("Warning Style");
         consolePane.debug("Debug Style");
+    }
+
+    public void showProgress() {
+        this.remove(scrollPane);
+        scrollPane.setVisible(false);
+
+        this.add(progressExample);
+        progressExample.setVisible(true);
+
+        // are these needed?
+        progressExample.setFocusable(true);
+        progressExample.setRequestFocusEnabled(true);
+        progressExample.requestFocus();
+    }
+
+    public void showConsole() {
+        this.remove(progressExample);
+        progressExample.setVisible(false);
+
+        this.add(scrollPane);
+        scrollPane.setVisible(true);
     }
 
     /**
@@ -82,14 +106,19 @@ public class MainFrame extends JFrame {
      * @return The JMenu object with all the JMenuItems in it.
      */
     private JMenu createMainMenu() {
-        JMenu menu = new JMenu("Options");
-        menu.setMnemonic('O');
+        JMenu menu = new JMenu("Demo");
+        menu.setMnemonic('D');
 
-        JMenuItem item = new JMenuItem("Placeholder");
+        JMenuItem item = new JMenuItem("Progress bar");
+        item.addActionListener(ae -> showProgress());
+        menu.add(item);
+
+        item = new JMenuItem("Background Task");
         menu.add(item);
         
         return menu;
     }
+    
     /**
      * Create the top-level menu for Console work
      * 
