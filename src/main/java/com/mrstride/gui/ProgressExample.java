@@ -1,5 +1,7 @@
 package com.mrstride.gui;
 
+import java.awt.Dimension;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -10,11 +12,14 @@ import javax.swing.JPanel;
 public class ProgressExample extends JPanel {
 
     public ProgressExample() {
+        // we create the components for the JPanel here.
+        // This must be done on the EDT Thread. Since MainFrame is created on the EDT,
+        // then this will also be constructed on the EDT.
         JButton button = new JButton("Return");
         button.addActionListener(ae -> MainFrame.theFrame.showConsole());
         this.add(button);
 
-        this.setVisible(false);
+        button.setPreferredSize(new Dimension(100, 20));
     }
 
 

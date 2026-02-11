@@ -45,13 +45,13 @@ public class MainFrame extends JFrame {
         
         scrollPane = new JScrollPane(loggingPane);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        // Review: why these dimensions?
-        scrollPane.setPreferredSize(new Dimension(780, 600));
         scrollPane.setVisible(true);
         this.add(scrollPane);
 
         // JFrame must be set to visible 
         this.setVisible(true);
+
+        progressExample = new ProgressExample();
 
         System.out.println("All done creating our frame");
 
@@ -71,10 +71,8 @@ public class MainFrame extends JFrame {
         this.add(progressExample);
         progressExample.setVisible(true);
 
-        // are these needed?
-        progressExample.setFocusable(true);
-        progressExample.setRequestFocusEnabled(true);
-        progressExample.requestFocus();
+        revalidate();
+        repaint();
     }
 
     public void showConsole() {
@@ -83,6 +81,9 @@ public class MainFrame extends JFrame {
 
         this.add(scrollPane);
         scrollPane.setVisible(true);
+
+        revalidate();
+        repaint();
     }
 
     /**
