@@ -6,8 +6,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 /**
- * The ProgressExample is an AnimationPanel so that our MainFrame
- * will call "start" where we can trigger the ProgressBar.
+ * The ProgressExample is an Panel. 
+ * There will be an exercise where students must create a progress bar.
  */
 public class ProgressExample extends JPanel {
 
@@ -21,8 +21,6 @@ public class ProgressExample extends JPanel {
 
         button.setPreferredSize(new Dimension(100, 20));
     }
-
-
 }
 
 /*

@@ -11,12 +11,10 @@
 	</parent>
 
   <groupId>com.mrstride</groupId>
-  <artifactId>platformstudent</artifactId>
+  <artifactId>student_exercises</artifactId>
   <version>1.0</version>
 
-  <name>platformstudent</name>
-  <!-- FIXME change it to the project's website -->
-  <!-- <url>http://www.mrstride.com</url> -->
+  <name>student_exercises</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

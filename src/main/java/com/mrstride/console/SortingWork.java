@@ -12,5 +12,9 @@ public class SortingWork  {
         consolePane.warn("Warning message");
         consolePane.error("Error message");
     }
+
+    public int sampleMethod(int x) {
+        return x * 2;
+    }
 }
 
